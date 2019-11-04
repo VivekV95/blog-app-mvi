@@ -1,7 +1,8 @@
-package com.example.blogappmvi
+package com.example.blogappmvi.ui.auth
 
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.example.blogappmvi.R
 
 class AuthActivity : AppCompatActivity() {
 
