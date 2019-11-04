@@ -7,6 +7,8 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".ui.auth.LauncherFragment"
     android:fillViewport="true"
+    android:clickable="true"
+    android:focusable="true"
     android:background="#fff">
 
     <androidx.constraintlayout.widget.ConstraintLayout
