@@ -39,10 +39,11 @@ class LauncherFragment : Fragment() {
         setupClickListeners()
     }
 
-    fun setupClickListeners() {
+    private fun setupClickListeners() {
         register.setOnClickListener { navRegistration() }
         login.setOnClickListener { navLogin() }
         forgot_password.setOnClickListener { navForgotPassword() }
+
     }
 
 }
