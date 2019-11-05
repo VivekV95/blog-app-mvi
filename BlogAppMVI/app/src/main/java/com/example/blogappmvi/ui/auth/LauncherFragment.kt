@@ -2,6 +2,7 @@ package com.example.blogappmvi.ui.auth
 
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -11,7 +12,7 @@ import androidx.navigation.fragment.findNavController
 import com.example.blogappmvi.R
 import kotlinx.android.synthetic.main.fragment_launcher.*
 
-class LauncherFragment : Fragment() {
+class LauncherFragment : BaseAuthFragment() {
 
     private fun navForgotPassword() {
         findNavController().navigate(R.id.action_launcherFragment_to_forgotPasswordFragment)
@@ -37,6 +38,9 @@ class LauncherFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
         focusable_view.requestFocus()
         setupClickListeners()
+
+        Log.d(TAG, "LauncherFragment: ${viewModel.hashCode()}" )
+
     }
 
     private fun setupClickListeners() {
