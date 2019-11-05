@@ -5,6 +5,7 @@ import androidx.room.Entity
 import androidx.room.ForeignKey
 import androidx.room.ForeignKey.CASCADE
 import androidx.room.PrimaryKey
+import com.google.gson.annotations.Expose
 
 @Entity(
     tableName = "auth_token",
@@ -23,6 +24,7 @@ data class AuthToken(
     @ColumnInfo(name = "account_pk")
     var account_pk: Int? = -1,
 
+    @Expose
     @ColumnInfo(name = "token")
     var token: String? = null
 )
