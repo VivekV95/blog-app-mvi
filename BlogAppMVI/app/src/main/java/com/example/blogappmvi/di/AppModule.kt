@@ -10,12 +10,36 @@ import com.example.blogappmvi.persistence.AccountPropertiesDao
 import com.example.blogappmvi.persistence.AppDatabase
 import com.example.blogappmvi.persistence.AppDatabase.Companion.DATABASE_NAME
 import com.example.blogappmvi.persistence.AuthTokenDao
+import com.example.blogappmvi.util.Constants.Companion.BASE_URL
+import com.example.blogappmvi.util.LiveDataCallAdapter
+import com.example.blogappmvi.util.LiveDataCallAdapterFactory
+import com.google.gson.Gson
+import com.google.gson.GsonBuilder
 import dagger.Module
 import dagger.Provides
+import retrofit2.Retrofit
+import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
 class AppModule{
+
+    @Singleton
+    @Provides
+    fun provideGsonBuilder() =
+        GsonBuilder()
+            .excludeFieldsWithoutExposeAnnotation()
+            .create()
+
+    @Singleton
+    @Provides
+    fun provideRetrofitInstance(gson: Gson) =
+        Retrofit
+            .Builder()
+            .baseUrl(BASE_URL)
+            .addCallAdapterFactory(LiveDataCallAdapterFactory())
+            .addConverterFactory(GsonConverterFactory.create(gson))
+            .build()
 
     @Singleton
     @Provides

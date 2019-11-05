@@ -9,13 +9,16 @@ import com.google.gson.annotations.SerializedName
 @Entity(tableName = "account_properties")
 data class AccountPoperties(
 
+    @Expose
     @PrimaryKey(autoGenerate = false)
     @ColumnInfo(name = "pk")
     var pk: Int,
 
+    @Expose
     @ColumnInfo(name = "email")
     var email: String,
 
+    @Expose
     @ColumnInfo(name = "username")
     var username: String
 )
