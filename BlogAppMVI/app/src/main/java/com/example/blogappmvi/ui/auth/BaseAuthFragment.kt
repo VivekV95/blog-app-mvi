@@ -22,6 +22,6 @@ abstract class BaseAuthFragment: DaggerFragment() {
 
         viewModel = activity?.run {
             ViewModelProvider(this, viewModelProviderFactory).get(AuthViewModel::class.java)
-        }?: throw Exception("")
+        }?: throw Exception("Plssssssss")
     }
 }
