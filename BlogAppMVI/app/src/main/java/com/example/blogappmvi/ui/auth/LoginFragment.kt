@@ -10,6 +10,7 @@ import android.view.ViewGroup
 import androidx.lifecycle.Observer
 
 import com.example.blogappmvi.R
+import com.example.blogappmvi.model.AuthToken
 import com.example.blogappmvi.ui.auth.state.LoginFields
 import kotlinx.android.synthetic.main.fragment_launcher.*
 import kotlinx.android.synthetic.main.fragment_login.*
@@ -29,6 +30,7 @@ class LoginFragment : BaseAuthFragment() {
 
         Log.d(TAG, "LoginFragment: ${viewModel.hashCode()}" )
         subscribeObservers()
+
     }
 
     private fun subscribeObservers() {
