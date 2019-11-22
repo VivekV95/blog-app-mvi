@@ -7,8 +7,11 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.Observer
 
 import com.example.blogappmvi.R
+import com.example.blogappmvi.ui.auth.state.RegistrationFields
+import kotlinx.android.synthetic.main.fragment_register.*
 
 /**
  * A simple [Fragment] subclass.
@@ -26,9 +29,31 @@ class RegisterFragment : BaseAuthFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        Log.d(TAG, "RegisterFragment: ${viewModel.hashCode()}" )
-
+        Log.d(TAG, "RegisterFragment: ${viewModel.hashCode()}")
+        subscribeObservers()
     }
 
+    private fun subscribeObservers() {
+        viewModel.viewState.observe(this, Observer { viewState ->
+            viewState.registrationFields?.let { registrationFields ->
+                registrationFields.registration_email?.let { email -> input_email.setText(email) }
+                registrationFields.registration_username?.let { username -> input_username.setText(username)}
+                registrationFields.registration_password?.let { password -> input_password.setText(password)}
+                registrationFields.registration_confirm_password?.let {
+                        confirmPassword -> input_password_confirm.setText(confirmPassword)}
+            }
+        })
+    }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        viewModel.setRegistrationFields(
+            RegistrationFields(
+                input_email.text.toString(),
+                input_username.text.toString(),
+                input_password.text.toString(),
+                input_password_confirm.text.toString()
+            )
+        )
+    }
 }
