@@ -3,10 +3,12 @@ package com.example.blogappmvi.ui.auth
 import android.content.Intent
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import android.util.Log
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import com.example.blogappmvi.R
 import com.example.blogappmvi.ui.BaseActivity
+import com.example.blogappmvi.ui.ResponseType
 import com.example.blogappmvi.ui.main.MainActivity
 import com.example.blogappmvi.viewmodel.ViewModelProviderFactory
 import javax.inject.Inject
@@ -27,8 +29,36 @@ class AuthActivity : BaseActivity() {
     }
 
     fun subscribeObservers() {
+        viewModel.dataState.observe(this, Observer { dataState ->
+            dataState.data?.let { data ->
+                data.data?.let { event ->
+                    event.getContentIfNotHandled()?.let {
+                        it.authToken?.let { token ->
+                            viewModel.setAuthToken(token)
+                        }
+                    }
+                }
+
+                data.response?.let { event ->
+                    event.getContentIfNotHandled()?.let { response ->
+                        when (response.responseType) {
+                            is ResponseType.Dialog -> {
+
+                            }
+                            is ResponseType.Toast -> {
+
+                            }
+                            is ResponseType.None -> {
+
+                            }
+                        }
+                    }
+                }
+            }
+        })
+
         viewModel.viewState.observe(this, Observer { authViewState ->
-            authViewState.authToken?.let {  authToken ->
+            authViewState.authToken?.let { authToken ->
                 sessionManager.login(authToken)
             }
         })
