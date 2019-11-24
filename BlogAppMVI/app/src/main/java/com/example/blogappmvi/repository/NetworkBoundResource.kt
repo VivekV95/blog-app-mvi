@@ -12,11 +12,14 @@ import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
 
-@InternalCoroutinesApi
 abstract class NetworkBoundResource<ResponseObject, ViewStateType>
     (
     isNetworkAvailable: Boolean
 ) {
+
+    protected val result = MediatorLiveData<DataState<ViewStateType>>()
+    protected lateinit var job: CompletableJob
+    protected lateinit var coroutineScope: CoroutineScope
 
     init {
         setJob(initNewJob())
@@ -40,10 +43,11 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType>
 
             GlobalScope.launch(IO) {
                 delay(NETWORK_TIMEOUT)
-            }
 
-            if (!job.isCompleted) {
-                job.cancel(CancellationException((UNABLE_TO_RESOLVE_HOST)))
+
+                if (!job.isCompleted) {
+                    job.cancel(CancellationException((UNABLE_TO_RESOLVE_HOST)))
+                }
             }
         } else {
             onErrorReturn(UNABLE_TODO_OPERATION_WO_INTERNET, true, shouldUseToast = false)
@@ -63,10 +67,6 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType>
             }
         }
     }
-
-    protected val result = MediatorLiveData<DataState<ViewStateType>>()
-    protected lateinit var job: CompletableJob
-    protected lateinit var coroutineScope: CoroutineScope
 
     fun onCompleteJob(dataState: DataState<ViewStateType>) {
         GlobalScope.launch(Main) {
@@ -106,7 +106,7 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType>
         )
     }
 
-    @InternalCoroutinesApi
+    @UseExperimental(InternalCoroutinesApi::class)
     private fun initNewJob(): Job {
         job = Job()
         job.invokeOnCompletion(
