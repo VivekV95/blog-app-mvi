@@ -1,7 +1,6 @@
 package com.example.blogappmvi.ui.auth
 
 import androidx.lifecycle.LiveData
-import androidx.lifecycle.ViewModel
 import com.example.blogappmvi.model.AuthToken
 import com.example.blogappmvi.repository.auth.AuthRepository
 import com.example.blogappmvi.ui.BaseViewModel
@@ -30,7 +29,7 @@ class AuthViewModel @Inject constructor
                 )
             }
             is RegisterAttemptEvent -> {
-                return authRepository.attempRegistration(
+                return authRepository.attemptRegistration(
                     stateEvent.email,
                     stateEvent.username,
                     stateEvent.password,
@@ -38,7 +37,7 @@ class AuthViewModel @Inject constructor
                 )
             }
             is CheckPreviousAuthEvent -> {
-                return AbsentLiveData.create()
+                return authRepository.checkPreviousAuthUser()
             }
         }
     }

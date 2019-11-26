@@ -10,7 +10,6 @@ import androidx.lifecycle.LiveData
 import androidx.lifecycle.MutableLiveData
 import com.example.blogappmvi.model.AuthToken
 import com.example.blogappmvi.persistence.AuthTokenDao
-import com.example.blogappmvi.util.Constants.Companion.TAG
 import kotlinx.coroutines.CancellationException
 import kotlinx.coroutines.Dispatchers.IO
 import kotlinx.coroutines.Dispatchers.Main
@@ -86,7 +85,7 @@ class SessionManager @Inject constructor
                 }
             }
         } catch (e: Exception) {
-            Log.e(TAG, "is not connected to internet: ${e.message}")
+
         }
         return false
     }
