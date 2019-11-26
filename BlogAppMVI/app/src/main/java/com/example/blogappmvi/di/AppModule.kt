@@ -1,6 +1,8 @@
 package com.example.blogappmvi.di
 
 import android.app.Application
+import android.content.Context
+import android.content.SharedPreferences
 import androidx.room.Room
 import com.bumptech.glide.Glide
 import com.bumptech.glide.RequestManager
@@ -13,6 +15,7 @@ import com.example.blogappmvi.persistence.AuthTokenDao
 import com.example.blogappmvi.util.Constants.Companion.BASE_URL
 import com.example.blogappmvi.util.LiveDataCallAdapter
 import com.example.blogappmvi.util.LiveDataCallAdapterFactory
+import com.example.blogappmvi.util.PreferenceKeys
 import com.google.gson.Gson
 import com.google.gson.GsonBuilder
 import dagger.Module
@@ -23,6 +26,16 @@ import javax.inject.Singleton
 
 @Module
 class AppModule{
+
+    @Singleton
+    @Provides
+    fun provideSharedPreferences(application: Application) =
+        application.getSharedPreferences(PreferenceKeys.APP_PREFERENCES, Context.MODE_PRIVATE)
+
+    @Singleton
+    @Provides
+    fun provideSharedPrefsEditor(sharedPreferences: SharedPreferences) =
+        sharedPreferences.edit()
 
     @Singleton
     @Provides

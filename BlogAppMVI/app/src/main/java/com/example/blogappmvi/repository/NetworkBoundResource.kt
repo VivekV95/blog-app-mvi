@@ -7,6 +7,7 @@ import com.example.blogappmvi.ui.Response
 import com.example.blogappmvi.ui.ResponseType
 import com.example.blogappmvi.util.*
 import com.example.blogappmvi.util.Constants.Companion.NETWORK_TIMEOUT
+import com.example.blogappmvi.util.Constants.Companion.TESTING_CACHE_DELAY
 import com.example.blogappmvi.util.Constants.Companion.TESTING_NETWORK_DELAY
 import kotlinx.coroutines.*
 import kotlinx.coroutines.Dispatchers.IO
@@ -14,7 +15,8 @@ import kotlinx.coroutines.Dispatchers.Main
 
 abstract class NetworkBoundResource<ResponseObject, ViewStateType>
     (
-    isNetworkAvailable: Boolean
+    isNetworkAvailable: Boolean,
+    isNetworkRequest: Boolean
 ) {
 
     protected val result = MediatorLiveData<DataState<ViewStateType>>()
@@ -25,32 +27,40 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType>
         setJob(initNewJob())
         setValue(DataState.loading(true, null))
 
-        if (isNetworkAvailable) {
-            coroutineScope.launch {
-                delay(TESTING_NETWORK_DELAY)
+        if (isNetworkRequest) {
+            if (isNetworkAvailable) {
+                coroutineScope.launch {
+                    delay(TESTING_NETWORK_DELAY)
 
-                withContext(Main) {
-                    val apiResponse = createCall()
-                    result.addSource(apiResponse) { response ->
-                        result.removeSource(apiResponse)
+                    withContext(Main) {
+                        val apiResponse = createCall()
+                        result.addSource(apiResponse) { response ->
+                            result.removeSource(apiResponse)
 
-                        coroutineScope.launch {
-                            handleNetworkCall(response)
+                            coroutineScope.launch {
+                                handleNetworkCall(response)
+                            }
                         }
                     }
                 }
-            }
 
-            GlobalScope.launch(IO) {
-                delay(NETWORK_TIMEOUT)
+                GlobalScope.launch(IO) {
+                    delay(NETWORK_TIMEOUT)
 
 
-                if (!job.isCompleted) {
-                    job.cancel(CancellationException((UNABLE_TO_RESOLVE_HOST)))
+                    if (!job.isCompleted) {
+                        job.cancel(CancellationException((UNABLE_TO_RESOLVE_HOST)))
+                    }
                 }
+            } else {
+                onErrorReturn(UNABLE_TODO_OPERATION_WO_INTERNET, true, shouldUseToast = false)
             }
         } else {
-            onErrorReturn(UNABLE_TODO_OPERATION_WO_INTERNET, true, shouldUseToast = false)
+            coroutineScope.launch {
+                delay(TESTING_CACHE_DELAY)
+
+                createCacheRequestAndReturn()
+            }
         }
     }
 
@@ -130,6 +140,8 @@ abstract class NetworkBoundResource<ResponseObject, ViewStateType>
     }
 
     fun asLiveData() = result as LiveData<DataState<ViewStateType>>
+
+    abstract suspend fun createCacheRequestAndReturn()
 
     abstract suspend fun handleApiSuccessResponse(response: ApiSuccessResponse<ResponseObject>)
 
